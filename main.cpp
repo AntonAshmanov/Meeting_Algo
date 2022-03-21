@@ -27,19 +27,22 @@ std::pair<int, int> FindInterval(int t0, const std::unordered_set<std::string>& 
     std::unordered_map<std::string, int> MeetEnd;
     auto point_iterator = points.lower_bound(t0);
 
-    for (auto it = point_iterator; it != points.end(); ++it) {
+     for (auto it = point_iterator; it != points.end(); ++it) {
         //если точка принадлежит юзерам
         if (users.find(it->second.UserName) != users.end()) {
             //точка конца встречи, начало которой не попало в t0
             if (point_sum == 0 && point_sign[it->second.PT] > 0) {
                 curTime = it->first;  
-            } else  { //то что мы ищем, все предыдущие встречи закончились, начинается новая встреча
+            } else if (point_sum == 0 && point_sign[it->second.PT] < 0)  { //то что мы ищем, все предыдущие встречи закончились, начинается новая встреча
                 if (it->first - curTime >= duration) {
                     return std::pair<int, int>{curTime, it->first};
                 }
                 curTime = it->first;
                 point_sum += point_sign[it->second.PT];
-            }  
+            } else {
+                curTime = it->first;
+                point_sum += point_sign[it->second.PT];
+            } 
         }
     }
 
